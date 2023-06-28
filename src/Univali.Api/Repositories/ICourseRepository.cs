@@ -21,8 +21,7 @@ public interface ICourseRepository {
 
 
     // UTILS
-    bool CheckIfExistsAuthors(List<AuthorDto> authors);
-    Task<List <Author>> GetAuthorsAsync(List<AuthorDto> authors);
+    Task<List <Author>> GetAuthorsAsync(List<int> authors);
 
 
 

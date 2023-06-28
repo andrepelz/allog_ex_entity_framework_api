@@ -40,24 +40,12 @@ public class CourseRepository : ICourseRepository {
         _context.Courses.Remove(course);
     }
 
+    
 
-
-    public bool CheckIfExistsAuthors(List<AuthorDto> authors) {
-        foreach (var author in authors) {
-            if(!_context.Authors.Any(a => a.AuthorId == author.AuthorId))
-                return false;
-        }
-
-        return true;
-    }
-
-    public async Task<List <Author>> GetAuthorsAsync(List<AuthorDto> authors) {
-        var authorsFromDatabase = new List<Author>();
-        foreach (var author in authors) {
-            authorsFromDatabase.Add(
-                (await _context.Authors.FindAsync(author.AuthorId))!
-            );
-        }
+    public async Task<List <Author>> GetAuthorsAsync(List<int> authors) {
+        var authorsFromDatabase = await _context.Authors
+            .Where(a => authors.Contains(a.AuthorId))
+            .ToListAsync();
 
         return authorsFromDatabase;
     }

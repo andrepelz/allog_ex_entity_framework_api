@@ -18,12 +18,13 @@ public class CreateCustomerCommandHandler : IRequestHandler<CreateCourseCommand,
 
 
     public async Task<CreateCourseDto> Handle(CreateCourseCommand request, CancellationToken cancellationToken) {
-        if(!_courseRepository.CheckIfExistsAuthors(request.Dto.Authors)) return null!;
+        List<int> authorIds = request.Dto.Authors
+            .Select(a => a.AuthorId)
+            .ToList();
 
         var courseWithoutAuthorsDto = _mapper.Map<CourseForCreationDto>(request.Dto);
         var newCourse = _mapper.Map<Course>(courseWithoutAuthorsDto);
-        newCourse.Authors = await _courseRepository.GetAuthorsAsync(request.Dto.Authors);
-        // var newCourse = _mapper.Map<Course>(request.Dto);
+        newCourse.Authors = await _courseRepository.GetAuthorsAsync(authorIds);
 
         _courseRepository.AddCourse(newCourse);
         await _courseRepository.SaveChangesAsync();
