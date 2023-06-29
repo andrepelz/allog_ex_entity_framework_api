@@ -20,7 +20,6 @@ public class CourseProfile : Profile {
         CreateMap<CourseWithAuthorsForCreationDto, CourseForCreationDto>();
 
 
-
         // CQRS
         CreateMap<Course, GetCourseDetailDto>();
         CreateMap<Course, GetCourseWithAuthorsDetailDto>();

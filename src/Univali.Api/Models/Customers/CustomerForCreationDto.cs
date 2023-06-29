@@ -1,11 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace Univali.Api.Models;
 
-public class CustomerForCreationDto : CustomerForManipulationDto
-{
-
-    
-
-}
-
+public class CustomerForCreationDto : CustomerForManipulationDto { }

@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Univali.Api.Models;
 
-public class CustomerForUpdateDto : CustomerForManipulationDto {
+public class PublisherForUpdateDto : PublisherForManipulationDto {
     [Required(ErrorMessage = "You should fill out an Id")]
-    public int CustomerId { get; set; }
+    public int PublisherId { get; set; }
 }

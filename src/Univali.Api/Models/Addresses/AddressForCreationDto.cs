@@ -1,6 +1,3 @@
 namespace Univali.Api.Models;
 
-public class AddressForCreationDto : AddressForManipulationDto
-{
-
-}
+public class AddressForCreationDto : AddressForManipulationDto { }

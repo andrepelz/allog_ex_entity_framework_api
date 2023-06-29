@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "e:\\Program Files (x86)\\trabalho\\Curso Allog Enter\\Modulo 2\\continuacao_webapi\\exercicio_entity_framework\\UnivaliEF\\src\\Univali.Api\\Univali.Api.csproj": {}
+    "E:\\Program Files (x86)\\trabalho\\Curso Allog Enter\\Modulo 2\\continuacao_webapi\\exercicio_entity_framework\\UnivaliEF\\src\\Univali.Api\\Univali.Api.csproj": {}
   },
   "projects": {
-    "e:\\Program Files (x86)\\trabalho\\Curso Allog Enter\\Modulo 2\\continuacao_webapi\\exercicio_entity_framework\\UnivaliEF\\src\\Univali.Api\\Univali.Api.csproj": {
+    "E:\\Program Files (x86)\\trabalho\\Curso Allog Enter\\Modulo 2\\continuacao_webapi\\exercicio_entity_framework\\UnivaliEF\\src\\Univali.Api\\Univali.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "e:\\Program Files (x86)\\trabalho\\Curso Allog Enter\\Modulo 2\\continuacao_webapi\\exercicio_entity_framework\\UnivaliEF\\src\\Univali.Api\\Univali.Api.csproj",
+        "projectUniqueName": "E:\\Program Files (x86)\\trabalho\\Curso Allog Enter\\Modulo 2\\continuacao_webapi\\exercicio_entity_framework\\UnivaliEF\\src\\Univali.Api\\Univali.Api.csproj",
         "projectName": "Univali.Api",
-        "projectPath": "e:\\Program Files (x86)\\trabalho\\Curso Allog Enter\\Modulo 2\\continuacao_webapi\\exercicio_entity_framework\\UnivaliEF\\src\\Univali.Api\\Univali.Api.csproj",
+        "projectPath": "E:\\Program Files (x86)\\trabalho\\Curso Allog Enter\\Modulo 2\\continuacao_webapi\\exercicio_entity_framework\\UnivaliEF\\src\\Univali.Api\\Univali.Api.csproj",
         "packagesPath": "C:\\Users\\Avell\\.nuget\\packages\\",
-        "outputPath": "e:\\Program Files (x86)\\trabalho\\Curso Allog Enter\\Modulo 2\\continuacao_webapi\\exercicio_entity_framework\\UnivaliEF\\src\\Univali.Api\\obj\\",
+        "outputPath": "E:\\Program Files (x86)\\trabalho\\Curso Allog Enter\\Modulo 2\\continuacao_webapi\\exercicio_entity_framework\\UnivaliEF\\src\\Univali.Api\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Avell\\AppData\\Roaming\\NuGet\\NuGet.Config"

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "85z+PzJaRgTL6CpxVhEi5L0Euz6HbZrc6DxxTE0yBNz3XAMlBy51cG6vgLyIoOk+XSDOrvRYMAsjvend1BAbFQ==",
+  "dgSpecHash": "AmVDChVW34VF1rY6UhJ1F31mxOfRqACGGaQ1ulExxDmXsXOwSCRC4bs9WBBf6B5+zTd0lFeIo9bg91m7U6iipg==",
   "success": true,
-  "projectFilePath": "e:\\Program Files (x86)\\trabalho\\Curso Allog Enter\\Modulo 2\\continuacao_webapi\\exercicio_entity_framework\\UnivaliEF\\src\\Univali.Api\\Univali.Api.csproj",
+  "projectFilePath": "E:\\Program Files (x86)\\trabalho\\Curso Allog Enter\\Modulo 2\\continuacao_webapi\\exercicio_entity_framework\\UnivaliEF\\src\\Univali.Api\\Univali.Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Avell\\.nuget\\packages\\automapper\\12.0.1\\automapper.12.0.1.nupkg.sha512",
     "C:\\Users\\Avell\\.nuget\\packages\\automapper.extensions.microsoft.dependencyinjection\\12.0.1\\automapper.extensions.microsoft.dependencyinjection.12.0.1.nupkg.sha512",
