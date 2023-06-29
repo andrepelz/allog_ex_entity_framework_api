@@ -6,22 +6,24 @@ namespace Univali.Api.Features.Courses.Commands.UpdateCourse;
 
 public class UpdateCourseCommandHandler : IRequestHandler<UpdateCourseCommand, UpdateCourseDto>
 {
-    private readonly ICourseRepository _courseRepository;
+    private readonly IPublisherRepository _repository;
     private readonly IMapper _mapper;
 
-    public UpdateCourseCommandHandler(ICourseRepository courseRepository, IMapper mapper) {
-        _courseRepository = courseRepository ?? throw new ArgumentNullException(nameof(courseRepository));
+    public UpdateCourseCommandHandler(IPublisherRepository repository, IMapper mapper) 
+    {
+        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public async Task<UpdateCourseDto> Handle(UpdateCourseCommand request, CancellationToken cancellationToken) {
+    public async Task<UpdateCourseDto> Handle(UpdateCourseCommand request, CancellationToken cancellationToken) 
+    {
         bool success = false;
 
-        var courseFromDatabase = await _courseRepository.GetCourseByIdAsync(request.Dto.CourseId);
+        var courseFromDatabase = await _repository.GetCourseByIdAsync(request.PublisherId,request.Dto.CourseId);
 
         if(courseFromDatabase != null) {
-            _courseRepository.UpdateCourse(courseFromDatabase, request.Dto);
-            await _courseRepository.SaveChangesAsync();
+            _repository.UpdateCourse(courseFromDatabase, request.Dto);
+            await _repository.SaveChangesAsync();
 
             success = true;
         }

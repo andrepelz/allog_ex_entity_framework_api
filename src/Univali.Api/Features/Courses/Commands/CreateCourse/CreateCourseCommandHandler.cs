@@ -7,29 +7,38 @@ using Univali.Api.Repositories;
 namespace Univali.Api.Features.Courses.Commands.CreateCourse;
 
 public class CreateCustomerCommandHandler : IRequestHandler<CreateCourseCommand, CreateCourseDto> {
-    private readonly ICourseRepository _courseRepository;
+    private readonly IPublisherRepository _repository;
     private readonly IMapper _mapper;
 
-    public CreateCustomerCommandHandler(ICourseRepository courseRepository, IMapper mapper) {
-        _courseRepository = courseRepository ?? throw new ArgumentNullException(nameof(courseRepository));
+    public CreateCustomerCommandHandler(IPublisherRepository repository, IMapper mapper) 
+    {
+        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
 
 
-    public async Task<CreateCourseDto> Handle(CreateCourseCommand request, CancellationToken cancellationToken) {
+    public async Task<CreateCourseDto> Handle(CreateCourseCommand request, CancellationToken cancellationToken) 
+    {
         List<int> authorIds = request.Dto.Authors
             .Select(a => a.AuthorId)
             .ToList();
 
-        var courseWithoutAuthorsDto = _mapper.Map<CourseForCreationDto>(request.Dto);
-        var newCourse = _mapper.Map<Course>(courseWithoutAuthorsDto);
-        newCourse.Authors = await _courseRepository.GetAuthorsAsync(authorIds);
+        if(! await _repository.AuthorsExistAsync(authorIds)) return null!;
 
-        _courseRepository.AddCourse(newCourse);
-        await _courseRepository.SaveChangesAsync();
+        CreateCourseDto courseToReturn = null!;
+        var publisherFromDatabase = await _repository.GetPublisherByIdAsync(request.PublisherId);
 
-        var courseToReturn = _mapper.Map<CreateCourseDto>(newCourse);
+        if(publisherFromDatabase != null) {
+            var courseWithoutAuthorsDto = _mapper.Map<CourseForCreationDto>(request.Dto);
+            var newCourse = _mapper.Map<Course>(courseWithoutAuthorsDto);
+            newCourse.Authors = await _repository.GetAuthorsAsync(authorIds);
+
+            _repository.AddCourse(publisherFromDatabase, newCourse);
+            await _repository.SaveChangesAsync();
+
+            courseToReturn = _mapper.Map<CreateCourseDto>(newCourse);
+        }
         
         return courseToReturn;
     }

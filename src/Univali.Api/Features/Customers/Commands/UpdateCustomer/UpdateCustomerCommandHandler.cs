@@ -1,33 +1,32 @@
 using AutoMapper;
 using MediatR;
-using Univali.Api.Entities;
 using Univali.Api.Repositories;
 
 namespace Univali.Api.Features.Customers.Commands.UpdateCustomer;
 
-public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, UpdateCustomerCommandDto>
-{
-    private readonly ICustomerRepository _customerRepository;
+public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, UpdateCustomerDto> {
+    private readonly ICustomerRepository _repository;
     private readonly IMapper _mapper;
 
-    public UpdateCustomerCommandHandler(ICustomerRepository customerRepository, IMapper mapper)
-    {
-        _customerRepository = customerRepository;
-        _mapper = mapper;
+    public UpdateCustomerCommandHandler(ICustomerRepository repository, IMapper mapper) {
+        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public async Task<UpdateCustomerCommandDto> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
-    {
-        var customerFromDatabase = await _customerRepository.GetCustomerByIdAsync(request.Id);
-        if(customerFromDatabase == null)
-        {
-            return new UpdateCustomerCommandDto {sucess = false};
+
+
+    public async Task<UpdateCustomerDto> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken) {
+        bool success = false;
+
+        var customerFromDatabase = await _repository.GetCustomerByIdAsync(request.Dto.CustomerId);
+
+        if(customerFromDatabase != null) {
+            _repository.UpdateCustomer(customerFromDatabase, request.Dto);
+            await _repository.SaveChangesAsync();
+
+            success = true;
         }
-        _mapper.Map(request, customerFromDatabase);
 
-        await _customerRepository.SaveChangesAsync();
-
-        return new UpdateCustomerCommandDto {sucess = true};
+        return new UpdateCustomerDto { Success = success };
     }
-
 }

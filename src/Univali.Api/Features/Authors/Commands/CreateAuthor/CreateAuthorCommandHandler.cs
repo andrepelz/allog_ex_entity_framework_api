@@ -7,22 +7,24 @@ namespace Univali.Api.Features.Authors.Commands.CreateAuthor;
 
 public class CreateAuthorCommandHandler : IRequestHandler<CreateAuthorCommand, CreateAuthorDto>
 {
-    private readonly IAuthorRepository _authorRepository;
+    private readonly IPublisherRepository _repository;
     private readonly IMapper _mapper;
 
-    public CreateAuthorCommandHandler(IAuthorRepository authorRepository, IMapper mapper)
+    public CreateAuthorCommandHandler(IPublisherRepository repository, IMapper mapper)
     {
-        _authorRepository = authorRepository;
-        _mapper = mapper;
+        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
     public  async Task<CreateAuthorDto> Handle(CreateAuthorCommand request, CancellationToken cancellationToken)
     {
-        var authorEntity = _mapper.Map<Author>(request.Dto);
-        _authorRepository.AddAuthor(authorEntity);
-        await _authorRepository.SaveChangesAsync();
-        var authorToReturn = _mapper.Map<CreateAuthorDto>(authorEntity);
-        return authorToReturn;
+        var newAuthor = _mapper.Map<Author>(request.Dto);
 
+        _repository.AddAuthor(newAuthor);
+        await _repository.SaveChangesAsync();
+
+        var authorToReturn = _mapper.Map<CreateAuthorDto>(newAuthor);
+        
+        return authorToReturn;
     }
 }

@@ -6,18 +6,18 @@ namespace Univali.Api.Features.Authors.Queries.GetAuthorDetail;
 
 public class GetAuthorDetailQueryHandler : IRequestHandler<GetAuthorDetailQuery, GetAuthorDetailDto>
 {
-    private readonly IAuthorRepository _authorRepository;
+    private readonly IPublisherRepository _repository;
     private readonly IMapper _mapper;
 
-    public GetAuthorDetailQueryHandler(IAuthorRepository authorRepository, IMapper mapper)
+    public GetAuthorDetailQueryHandler(IPublisherRepository repository, IMapper mapper)
     {
-        _authorRepository = authorRepository;
-        _mapper = mapper;
+        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
     public async Task<GetAuthorDetailDto> Handle(GetAuthorDetailQuery request, CancellationToken cancellationToken)
     {
-        var authorFromDatabase = await _authorRepository.GetAuthorByIdAsync(request.AuthorId);
+        var authorFromDatabase = await _repository.GetAuthorByIdAsync(request.Id);
         return _mapper.Map<GetAuthorDetailDto>(authorFromDatabase);
     }
 }

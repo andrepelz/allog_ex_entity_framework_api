@@ -6,25 +6,28 @@ namespace Univali.Api.Features.Authors.Commands.UpdateAuthor;
 
 public class UpdateAuthorCommandHandler : IRequestHandler<UpdateAuthorCommand, UpdateAuthorDto>
 {
-    private readonly IAuthorRepository _authorRepository;
+    private readonly IPublisherRepository _repository;
     private readonly IMapper _mapper;
 
-    public UpdateAuthorCommandHandler(IAuthorRepository authorRepository, IMapper mapper)
+    public UpdateAuthorCommandHandler(IPublisherRepository repository, IMapper mapper)
     {
-        _authorRepository = authorRepository;
-        _mapper = mapper;
+        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
+
     public async Task<UpdateAuthorDto> Handle(UpdateAuthorCommand request, CancellationToken cancellationToken)
     {
-        var authorFromDatabase = await _authorRepository.GetAuthorByIdAsync(request.Dto.AuthorId);
-        if(authorFromDatabase == null)
-        {
-            return new UpdateAuthorDto {Success = false};   
+        bool success = false;
+
+        var authorFromDatabase = await _repository.GetAuthorByIdAsync(request.Dto.AuthorId);
+
+        if(authorFromDatabase != null) {
+            _repository.UpdateAuthor(authorFromDatabase, request.Dto);
+            await _repository.SaveChangesAsync();
+
+            success = true;
         }
-        _mapper.Map(request.Dto, authorFromDatabase);
 
-        await _authorRepository.SaveChangesAsync();
-
-        return new UpdateAuthorDto {Success = true};
+        return new UpdateAuthorDto { Success = success };
     }
 }

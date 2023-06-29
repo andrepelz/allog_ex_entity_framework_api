@@ -1,6 +1,5 @@
 namespace Univali.Api.Features.Customers.Commands.DeleteCustomer;
 
-public class DeleteCustomerDto
-{
-    public bool sucess {get;set;}
+public class DeleteCustomerDto {
+    public bool Success { get; set; }
 }

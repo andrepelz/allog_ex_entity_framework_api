@@ -1,42 +1,28 @@
 using AutoMapper;
 using MediatR;
 using Univali.Api.Entities;
-using Univali.Api.Models;
 using Univali.Api.Repositories;
 
 namespace Univali.Api.Features.Customers.Commands.CreateCustomerWithAddresses;
 
-public class CreateCustomerWithAddressesCommandHandler : IRequestHandler<CreateCustomerWithAddressesCommand, CreateCustomerWithAddressesDto>
-{
-    private readonly ICustomerRepository _customerRepository;
+public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerWithAddressesCommand, CreateCustomerWithAddressesDto> {
+    private readonly ICustomerRepository _repository;
     private readonly IMapper _mapper;
 
-    public CreateCustomerWithAddressesCommandHandler(ICustomerRepository customerRepository, IMapper mapper)
-    {
-        _customerRepository = customerRepository;
-        _mapper = mapper;
+    public CreateCustomerCommandHandler(ICustomerRepository repository, IMapper mapper) {
+        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public async Task<CreateCustomerWithAddressesDto> Handle(CreateCustomerWithAddressesCommand request, CancellationToken cancellationToken)
-    {
-        List<Address> AddressesEntity = request.Addresses
-            .Select(address =>
-                _mapper.Map<Address>(address)
-                ).ToList();
 
-        var customerEntity = _mapper.Map<Customer>(request);
-        customerEntity.Addresses = AddressesEntity;
 
-        _customerRepository.AddCustomer(customerEntity);
-        await _customerRepository.SaveChangesAsync();
-       
-        List<AddressDto> addressesDto = customerEntity.Addresses
-            .Select(address =>
-                _mapper.Map<AddressDto>(address)
-                ).ToList();
+    public async Task<CreateCustomerWithAddressesDto> Handle(CreateCustomerWithAddressesCommand request, CancellationToken cancellationToken) {
+        var newCustomer = _mapper.Map<Customer>(request.Dto);
 
-        var customerToReturn =  _mapper.Map<CreateCustomerWithAddressesDto>(customerEntity);
-        customerToReturn.Addresses = addressesDto;
+        _repository.AddCustomer(newCustomer);
+        await _repository.SaveChangesAsync();
+
+        var customerToReturn = _mapper.Map<CreateCustomerWithAddressesDto>(newCustomer);
         
         return customerToReturn;
     }

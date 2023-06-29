@@ -4,24 +4,29 @@ using Univali.Api.Repositories;
 
 namespace Univali.Api.Features.Customers.Commands.DeleteCustomer;
 
-public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerCommand, DeleteCustomerDto>
-{
-    private readonly ICustomerRepository _customerRepository;
+public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerCommand, DeleteCustomerDto> {
+    private readonly ICustomerRepository _repository;
+    private readonly IMapper _mapper;
 
-    public DeleteCustomerCommandHandler (ICustomerRepository customerRepository)
-    {
-        _customerRepository = customerRepository;
+    public DeleteCustomerCommandHandler(ICustomerRepository repository, IMapper mapper) {
+        _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public async Task<DeleteCustomerDto> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
-    {
-        var customerFromDatabase = await _customerRepository.GetCustomerByIdAsync(request.Id);
 
-        if(customerFromDatabase == null) return new DeleteCustomerDto {sucess = false};
 
-        _customerRepository.DeleteCustomer(customerFromDatabase);
-        await _customerRepository.SaveChangesAsync();
-        return new DeleteCustomerDto {sucess = true};
-    }   
+    public async Task<DeleteCustomerDto> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken) {
+        bool success = false;
 
+        var customerFromDatabase = await _repository.GetCustomerByIdAsync(request.Id);
+
+        if(customerFromDatabase != null) {
+            _repository.RemoveCustomer(customerFromDatabase);
+            await _repository.SaveChangesAsync();
+
+            success = true;
+        }
+
+        return new DeleteCustomerDto { Success = success };
+    }
 }

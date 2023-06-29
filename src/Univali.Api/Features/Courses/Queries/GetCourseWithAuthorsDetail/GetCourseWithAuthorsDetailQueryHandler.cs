@@ -6,18 +6,18 @@ namespace Univali.Api.Features.Courses.Queries.GetCourseWithAuthorsDetail;
 
 public class GetCourseWithAuthorsDetailQueryHandler : IRequestHandler<GetCourseWithAuthorsDetailQuery, GetCourseWithAuthorsDetailDto>
 {
-    private readonly ICourseRepository _courseRepository;
+    private readonly IPublisherRepository _repository;
     private readonly IMapper _mapper;
 
-    public GetCourseWithAuthorsDetailQueryHandler(ICourseRepository courseRepository, IMapper mapper)
+    public GetCourseWithAuthorsDetailQueryHandler(IPublisherRepository repository, IMapper mapper)
     {
-        _courseRepository = courseRepository;
+        _repository = repository;
         _mapper = mapper;
     }
 
     public async Task<GetCourseWithAuthorsDetailDto> Handle(GetCourseWithAuthorsDetailQuery request, CancellationToken cancellationToken)
     {
-        var courseFromDatabase = await _courseRepository.GetCourseWithAuthorsByIdAsync(request.CourseId);
+        var courseFromDatabase = await _repository.GetCourseWithAuthorsByIdAsync(request.PublisherId,request.CourseId);
         return _mapper.Map<GetCourseWithAuthorsDetailDto>(courseFromDatabase);
     }
 }
