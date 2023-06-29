@@ -1,6 +1,4 @@
-using AutoMapper;
 using MediatR;
-using Univali.Api.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Univali.Api.Features.Authors.Commands.CreateAuthor;
 using Univali.Api.Features.Authors.Commands.UpdateAuthor;
@@ -8,7 +6,6 @@ using Univali.Api.Features.Authors.Commands.DeleteAuthor;
 using Univali.Api.Features.Authors.Queries.GetAuthorDetail;
 using Univali.Api.Features.Authors.Queries.GetAuthorWithCoursesDetail;
 using Microsoft.AspNetCore.Authorization;
-using Univali.Api.Entities;
 using Univali.Api.Models;
 
 namespace Univali.Api.Controllers;
@@ -17,55 +14,34 @@ namespace Univali.Api.Controllers;
 [Authorize]
 public class AuthorsController : MainController
 {
-    private readonly IMapper _mapper;
-    private readonly IAuthorRepository _authorRepository;
     private readonly IMediator _mediator;
 
-    public AuthorsController(IMapper mapper, IAuthorRepository authorRepository, IMediator mediator)
-    {
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-        _authorRepository = authorRepository ?? throw new ArgumentNullException(nameof(authorRepository));
+    public AuthorsController(IMediator mediator) {
         _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
     }
 
     [HttpGet("{authorId}", Name = "GetAuthorById")]
-    public async Task<ActionResult<GetAuthorDetailDto>> GetAuthorById(
-        int authorId
-    )
-    {
-        var getAuthorQuery = new GetAuthorDetailQuery {AuthorId = authorId};
-
+    public async Task<ActionResult <GetAuthorDetailDto>> GetAuthorById(int authorId) {
+        var getAuthorQuery = new GetAuthorDetailQuery {Id = authorId};
         var authorToReturn = await _mediator.Send(getAuthorQuery);
 
-        if (authorToReturn == null) return NotFound();
-
-        return Ok(authorToReturn);
+        return authorToReturn != null ? Ok(authorToReturn) : NotFound();
     }
 
     [HttpGet("with-courses/{authorId}")]
-    public async Task<ActionResult<GetAuthorWithCoursesDetailDto>> GetAuthorWithCourses(
-        int authorId
-    )
-    {
-        var getAuthorWithCoursesQuery = new GetAuthorWithCoursesDetailQuery {AuthorId = authorId};
-
+    public async Task<ActionResult <GetAuthorWithCoursesDetailDto>> GetAuthorWithCourses(int authorId) {
+        var getAuthorWithCoursesQuery = new GetAuthorWithCoursesDetailQuery {Id = authorId};
         var authorToReturn = await _mediator.Send(getAuthorWithCoursesQuery);
 
-        if (authorToReturn == null) return NotFound();
-
-        return Ok(authorToReturn);
+        return authorToReturn != null ? Ok(authorToReturn) : NotFound();
     }
 
     [HttpPost]
-    public async Task<ActionResult<CreateAuthorDto>> CreateAuthor (
-        AuthorForCreationDto authorForCreationDto
-    )
-    {
+    public async Task<ActionResult <CreateAuthorDto>> CreateAuthor(AuthorForCreationDto authorForCreationDto) {
         var createAuthorCommand = new CreateAuthorCommand { Dto = authorForCreationDto };
         var authorToReturn = await _mediator.Send(createAuthorCommand);
 
-        return CreatedAtRoute
-        (
+        return CreatedAtRoute(
             "GetAuthorById",
             new { authorId = authorToReturn.AuthorId },
             authorToReturn
@@ -74,32 +50,20 @@ public class AuthorsController : MainController
 
     [HttpPut("{authorId}")]
 
-    public async Task<ActionResult> UpdateAuthor(
-        int authorId,
-        AuthorForUpdateDto authorForUpdateDto
-    )
-    {
+    public async Task<ActionResult> UpdateAuthor(int authorId, AuthorForUpdateDto authorForUpdateDto) {
         if(authorForUpdateDto.AuthorId != authorId) return BadRequest();
 
         var updateAuthorCommand = new UpdateAuthorCommand { Dto = authorForUpdateDto };
-        var updateCustomer = await _mediator.Send(updateAuthorCommand);
+        var result = await _mediator.Send(updateAuthorCommand);
 
-        if(updateCustomer.Success == false) return NotFound();
-
-        return NoContent();
+        return result.Success ? NoContent() : NotFound();
     }
 
     [HttpDelete("{authorId}")]
-    public async Task<ActionResult> DeleteAuthor(int authorId)
-    {
-        var authorExists = await _authorRepository.AuthorExistsAsync(authorId);
+    public async Task<ActionResult> DeleteAuthor(int authorId) {
+        var deleteAuthorCommand = new DeleteAuthorCommand { Id = authorId };
+        var result = await _mediator.Send(deleteAuthorCommand);
 
-        if (!authorExists) return NotFound();
-
-        var deleteAuthorCommand = new DeleteAuthorCommand {AuthorId = authorId};
-
-        await _mediator.Send(deleteAuthorCommand);
-
-        return NoContent();
+        return result.Success ? NoContent() : NotFound();
     }
 }
