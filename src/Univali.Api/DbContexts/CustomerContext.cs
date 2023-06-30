@@ -15,7 +15,8 @@ public class CustomerContext : DbContext {
 
         customer
             .HasMany(c => c.Addresses)
-            .WithOne(a => a.Customer);
+            .WithOne(a => a.Customer)
+            .HasForeignKey(a => a.CustomerId);
         
         customer
             .Property(customer => customer.Name)

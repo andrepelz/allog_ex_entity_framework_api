@@ -11,26 +11,17 @@ internal static class StartupHelperExtensions
 
         try
         {
-            var context = scope.ServiceProvider.GetService<CustomerContext>();
-            if (context != null)
+            var customerContext = scope.ServiceProvider.GetService<CustomerContext>();
+            if (customerContext != null)
             {
-                await context.Database.EnsureDeletedAsync();
-                await context.Database.MigrateAsync();
+                await customerContext.Database.EnsureDeletedAsync();
+                await customerContext.Database.MigrateAsync();
             }
-        }
-        catch (Exception ex)
-        {
-            var logger = scope.ServiceProvider.GetRequiredService<ILogger>();
-            logger.LogError(ex, "An error occurred while migrating the database.");
-        }
 
-        try
-        {
-            var context = scope.ServiceProvider.GetService<PublisherContext>();
-            if (context != null)
+            var publisherContext = scope.ServiceProvider.GetService<PublisherContext>();
+            if (publisherContext != null)
             {
-                await context.Database.EnsureDeletedAsync();
-                await context.Database.MigrateAsync();
+                await publisherContext.Database.MigrateAsync();
             }
         }
         catch (Exception ex)

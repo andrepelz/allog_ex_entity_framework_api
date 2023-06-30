@@ -16,7 +16,9 @@ public class PublisherContext : DbContext {
         var publisher = modelBuilder.Entity<Publisher>();
 
         publisher
-            .HasMany(p => p.Courses);
+            .HasMany(p => p.Courses)
+            .WithOne(c => c.Publisher)
+            .HasForeignKey(c => c.PublisherId);
         
         publisher
             .Property(p => p.FirstName)
